@@ -16,7 +16,7 @@ export default function Signup() {
 
     try {
       const res = await handleAuth('signup', values);
-      console.log(response);
+      console.log(res);
       navigation.navigate('hello');
     } catch (e) {
       setError(e.message);
