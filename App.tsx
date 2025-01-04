@@ -5,15 +5,16 @@
  * @format
  */
 
-import React from 'react';
+import React, {useContext} from 'react';
 import './gesture-handler';
-import {StatusBar, useColorScheme} from 'react-native';
+import {StatusBar} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import Hello from './screens/Hello';
 import Login from './screens/Login';
 import Signup from './screens/Signup';
 import {NavigationContainer} from '@react-navigation/native';
 import Colors from './Colors';
+import {AuthContext, AuthContextProvider} from './store/auth-context';
 const Stack = createStackNavigator();
 
 function AuthStackNavigation() {
@@ -48,16 +49,24 @@ function AuthenticatedNavigation() {
     </Stack.Navigator>
   );
 }
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
 
+function HandleAuthPage() {
+  const authCtx = useContext(AuthContext);
+   let returnedScreen;
+  if (authCtx.isAuthenticated) {
+    returnedScreen = <AuthenticatedNavigation />;
+  } else {
+    returnedScreen = <AuthStackNavigation />;
+  }
+  return <NavigationContainer>{returnedScreen}</NavigationContainer>;
+}
+function App(): React.JSX.Element {
   return (
     <>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <NavigationContainer>
-        <AuthStackNavigation />
-        {/* <AuthenticatedNavigation /> */}
-      </NavigationContainer>
+      <StatusBar barStyle={'light-content'} />
+      <AuthContextProvider>
+        <HandleAuthPage />
+      </AuthContextProvider>
     </>
   );
 }
